@@ -1,65 +1,59 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
+
 /**
  * ============================================================
- * MAIN CLASS - UseCase5BookingRequestQueue
+ * MAIN CLASS - UseCase7AddOnServiceSelection
  * ============================================================
- * Use Case 5: Booking Request (First-Come-First-Served)
- * Description:
- * This class demonstrates how booking
- * requests are accepted and queued
- * in a fair and predictable order.
- * No room allocation or inventory
- * update is performed here.
- * @version 5.0
+ * Demonstrates add-on service selection for a reservation
  */
 public class BookMyStayApp {
-
     public static void main(String[] args) {
-        System.out.println("Booking Request Queue");
-        BookingRequestQueue bookingQueue = new BookingRequestQueue();
-        Reservation r1 = new Reservation("Abhi", "Single");
-        Reservation r2 = new Reservation("Subha", "Double");
-        Reservation r3 = new Reservation("Vanmathi", "Suite");
-        bookingQueue.addRequest(r1);
-        bookingQueue.addRequest(r2);
-        bookingQueue.addRequest(r3);
-        while (bookingQueue.hasPendingRequests()) {
-            Reservation r = bookingQueue.getNextRequest();
-            System.out.println("Processing booking for Guest: "
-                    + r.getGuestName()
-                    + ", Room Type: "
-                    + r.getRoomType());
-        }
+        System.out.println("Add-On Service Selection");
+        String reservationId = "Single-1";
+        AddOnService breakfast = new AddOnService("Breakfast", 500.0);
+        AddOnService spa = new AddOnService("Spa", 1000.0);
+        AddOnServiceManager manager = new AddOnServiceManager();
+        manager.addService(reservationId, breakfast);
+        manager.addService(reservationId, spa);
+        double totalCost = manager.calculateTotalServiceCost(reservationId);
+        System.out.println("Reservation ID: " + reservationId);
+        System.out.println("Total Add-On Cost: " + totalCost);
     }
 }
-class Reservation {
-    private String guestName;
-    private String roomType;
-    public Reservation(String guestName, String roomType) {
-        this.guestName = guestName;
-        this.roomType = roomType;
-    }
-    public String getGuestName() {
-        return guestName;
-    }
-    public String getRoomType() {
-        return roomType;
-    }
-}
-class BookingRequestQueue {
-    private Queue<Reservation> requestQueue;
 
-    public BookingRequestQueue() {
-        requestQueue = new LinkedList<>();
+class AddOnService {
+    private String serviceName;
+    private double cost;
+    public AddOnService(String serviceName, double cost) {
+        this.serviceName = serviceName;
+        this.cost = cost;
     }
-    public void addRequest(Reservation reservation) {
-        requestQueue.offer(reservation);
+    public String getServiceName() {
+        return serviceName;
     }
-    public Reservation getNextRequest() {
-        return requestQueue.poll();
+    public double getCost() {
+        return cost;
     }
-    public boolean hasPendingRequests() {
-        return !requestQueue.isEmpty();
+}
+
+class AddOnServiceManager {
+
+    private Map<String, List<AddOnService>> servicesByReservation;
+    public AddOnServiceManager() {
+        servicesByReservation = new HashMap<>();
+    }
+    public void addService(String reservationId, AddOnService service) {
+        servicesByReservation.putIfAbsent(reservationId, new ArrayList<>());
+        servicesByReservation.get(reservationId).add(service);
+    }
+    public double calculateTotalServiceCost(String reservationId) {
+        double total = 0;
+        List<AddOnService> services = servicesByReservation.get(reservationId);
+        if (services != null) {
+            for (AddOnService s : services) {
+                total += s.getCost();
+            }
+        }
+        return total;
     }
 }
