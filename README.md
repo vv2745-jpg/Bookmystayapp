@@ -1,14 +1,13 @@
 # BookMyStayApp
 This project presents the design and implementation of a Hotel Booking Management System to illustrate the practical application of Core Java and fundamental data structures in real-world scenarios
-Use Case 4: Room Search & Availability Check
-Goal: Enable guests to view available rooms and their details without modifying system state, reinforcing safe data access and clear separation of responsibilities.
+Use Case 5: Booking Request (First-Come-First-Served)
+Goal: Handle multiple booking requests fairly by introducing a request intake mechanism that preserves arrival order, reflecting real-world booking behavior during peak demand.
 Actor:
-Guest – initiates a search to view available room options.
-Search Service – handles read-only access to inventory and room information.
+Reservation – represents a guest’s intent to book a room.
+Booking Request Queue – manages and orders incoming booking requests.
 Flow:
-Guest initiates a room search request.
-The system retrieves availability data from the inventory.
-Room details and pricing are obtained from room objects.
-Unavailable room types are filtered out.
-Available room types and their details are displayed.
-System state remains unchanged.
+Guest submits a booking request.
+The request is added to the booking queue.
+Requests are stored in arrival order.
+Queued requests wait for processing by the allocation system.
+No inventory mutation occurs at this stage.
