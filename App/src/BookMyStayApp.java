@@ -1,65 +1,59 @@
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 /**
  * ============================================================
- * MAIN CLASS - UseCase5BookingRequestQueue
+ * CLASS - BookingHistory
  * ============================================================
- * Use Case 5: Booking Request (First-Come-First-Served)
+ * Use Case 8: Booking History & Reporting
  * Description:
- * This class demonstrates how booking
- * requests are accepted and queued
- * in a fair and predictable order.
- * No room allocation or inventory
- * update is performed here.
- * @version 5.0
+ * This class maintains a record of
+ * confirmed reservations.
+ * It provides ordered storage for
+ * historical and reporting purposes.
+ * @version 8.0
  */
-public class BookMyStayApp {
-
-    public static void main(String[] args) {
-        System.out.println("Booking Request Queue");
-        BookingRequestQueue bookingQueue = new BookingRequestQueue();
-        Reservation r1 = new Reservation("Abhi", "Single");
-        Reservation r2 = new Reservation("Subha", "Double");
-        Reservation r3 = new Reservation("Vanmathi", "Suite");
-        bookingQueue.addRequest(r1);
-        bookingQueue.addRequest(r2);
-        bookingQueue.addRequest(r3);
-        while (bookingQueue.hasPendingRequests()) {
-            Reservation r = bookingQueue.getNextRequest();
-            System.out.println("Processing booking for Guest: "
-                    + r.getGuestName()
-                    + ", Room Type: "
-                    + r.getRoomType());
+public class BookingHistory {
+    class Reservation {
+        private String guestName;
+        private String roomType;
+        public Reservation(String guestName, String roomType) {
+            this.guestName = guestName;
+            this.roomType = roomType;
+        }
+        public String getGuestName() {
+            return guestName;
+        }
+        public String getRoomType() {
+            return roomType;
         }
     }
-}
-class Reservation {
-    private String guestName;
-    private String roomType;
-    public Reservation(String guestName, String roomType) {
-        this.guestName = guestName;
-        this.roomType = roomType;
+    class BookingHistory {
+        private List<Reservation> confirmedReservations;
+        public BookingHistory() {
+            confirmedReservations = new ArrayList<>();
+        }
+        public void addReservation(Reservation reservation) {
+            confirmedReservations.add(reservation);
+        }
+        public List<Reservation> getConfirmedReservations() {
+            return confirmedReservations;
+        }
     }
-    public String getGuestName() {
-        return guestName;
+    class BookingReportService {
+        public void generateReport(BookingHistory history) {
+            System.out.println("\nBooking History Report\n");
+            for (Reservation r : history.getConfirmedReservations()) {
+                System.out.println("Guest: " + r.getGuestName()
+                        + ", Room Type: " + r.getRoomType());
+            }
+        }
     }
-    public String getRoomType() {
-        return roomType;
+    public class UseCase8BookingHistoryReport {
+        public static void main(String[] args) {
+            BookingHistory history = new BookingHistory();
+            history.addReservation(new Reservation("Abhi", "Single"));
+            history.addReservation(new Reservation("Subha", "Double"));
+            history.addReservation(new Reservation("Vanmathi", "Suite"));
+            BookingReportService report = new BookingReportService();
+            report.generateReport(history);
+        }
     }
-}
-class BookingRequestQueue {
-    private Queue<Reservation> requestQueue;
-
-    public BookingRequestQueue() {
-        requestQueue = new LinkedList<>();
-    }
-    public void addRequest(Reservation reservation) {
-        requestQueue.offer(reservation);
-    }
-    public Reservation getNextRequest() {
-        return requestQueue.poll();
-    }
-    public boolean hasPendingRequests() {
-        return !requestQueue.isEmpty();
-    }
-}
