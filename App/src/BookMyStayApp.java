@@ -1,3 +1,72 @@
+ feature/UC9-Error-Handling-Validation
+import java.util.*;
+/**
+ * ============================================================
+ * CLASS - ReservationValidator
+ * ============================================================
+ * Use Case 9: Error Handling & Validation
+ * Description:
+ * This class is responsible for validating
+ * booking requests before they are processed.
+ * All validation rules are centralized
+ * to avoid duplication and inconsistency.
+ * @version 9.0
+ */
+class InvalidBookingException extends Exception {
+    public InvalidBookingException(String message) {
+        super(message);
+    }
+}
+class RoomInventory {
+    private List<String> availableRooms;
+
+    public RoomInventory() {
+        availableRooms = Arrays.asList("Single", "Double", "Suite");
+    }
+    public boolean isValidRoom(String roomType) {
+        return availableRooms.contains(roomType);
+    }
+}
+class BookingRequestQueue {
+    public void addRequest(String guestName, String roomType) {
+        System.out.println("Booking request added for " + guestName);
+    }
+}
+class ReservationValidator {
+
+    public void validate(String guestName, String roomType, RoomInventory inventory)
+            throws InvalidBookingException {
+        if (guestName == null || guestName.trim().isEmpty()) {
+            throw new InvalidBookingException("Guest name cannot be empty.");
+        }
+        if (!inventory.isValidRoom(roomType)) {
+            throw new InvalidBookingException("Invalid room type selected.");
+        }
+    }
+}
+
+public class BookMyStayApp {
+    public static void main(String[] args) {
+        System.out.println("Booking Validation");
+        Scanner scanner = new Scanner(System.in);
+        RoomInventory inventory = new RoomInventory();
+        ReservationValidator validator = new ReservationValidator();
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
+        try {
+            System.out.print("Enter guest name: ");
+            String name = scanner.nextLine();
+            System.out.print("Enter room type (Single/Double/Suite): ");
+            String roomType = scanner.nextLine();
+            validator.validate(name, roomType, inventory);
+            bookingQueue.addRequest(name, roomType);
+            System.out.println("Booking successful!");
+
+        } catch (InvalidBookingException e) {
+            System.out.println("Booking failed: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+
 import java.util.LinkedList;
 import java.util.Queue;
 /**
@@ -61,5 +130,6 @@ class BookingRequestQueue {
     }
     public boolean hasPendingRequests() {
         return !requestQueue.isEmpty();
+ dev
     }
 }
